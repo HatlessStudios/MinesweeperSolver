@@ -23,7 +23,7 @@ class Minesweeper {
             int x = k % width;
             int y = k / width;
             cells[x][y].number = -9;
-            cells[x][y].forEachNeighbour(Cell::increment);
+            cells[x][y].neighbours().forEach(Cell::increment);
         });
     }
 
@@ -43,7 +43,7 @@ class Minesweeper {
             y = cell.y;
             cell.revealed = true;
             updateQueue.add(cell);
-            if (cell.number == 0) cell.forEachNeighbour(stack::add);
+            if (cell.number == 0) cell.neighbours().filter(c -> !c.revealed).forEach(stack::add);
         }
     }
 

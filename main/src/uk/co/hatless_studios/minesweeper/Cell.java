@@ -1,6 +1,6 @@
 package uk.co.hatless_studios.minesweeper;
 
-import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 class Cell {
     Minesweeper minesweeper;
@@ -25,16 +25,18 @@ class Cell {
         if (number >= 0) number++;
     }
 
-    void forEachNeighbour(Consumer<Cell> consumer) {
+    Stream<Cell> neighbours() {
+        Stream.Builder<Cell> builder = Stream.builder();
         int w = minesweeper.width - 1;
         int h = minesweeper.height - 1;
-        if (x > 0) consumer.accept(minesweeper.cells[x - 1][y]);
-        if (y > 0) consumer.accept(minesweeper.cells[x][y - 1]);
-        if (x < w) consumer.accept(minesweeper.cells[x + 1][y]);
-        if (y < h) consumer.accept(minesweeper.cells[x][y + 1]);
-        if (x > 0 && y > 0) consumer.accept(minesweeper.cells[x - 1][y - 1]);
-        if (x < w && y > 0) consumer.accept(minesweeper.cells[x + 1][y - 1]);
-        if (x > 0 && y < h) consumer.accept(minesweeper.cells[x - 1][y + 1]);
-        if (x < w && y < h) consumer.accept(minesweeper.cells[x + 1][y + 1]);
+        if (x > 0) builder.add(minesweeper.cells[x - 1][y]);
+        if (y > 0) builder.add(minesweeper.cells[x][y - 1]);
+        if (x < w) builder.add(minesweeper.cells[x + 1][y]);
+        if (y < h) builder.add(minesweeper.cells[x][y + 1]);
+        if (x > 0 && y > 0) builder.add(minesweeper.cells[x - 1][y - 1]);
+        if (x < w && y > 0) builder.add(minesweeper.cells[x + 1][y - 1]);
+        if (x > 0 && y < h) builder.add(minesweeper.cells[x - 1][y + 1]);
+        if (x < w && y < h) builder.add(minesweeper.cells[x + 1][y + 1]);
+        return builder.build();
     }
 }
