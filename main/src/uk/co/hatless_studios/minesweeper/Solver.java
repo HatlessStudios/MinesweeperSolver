@@ -3,6 +3,7 @@ package uk.co.hatless_studios.minesweeper;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Random;
+import java.util.function.BooleanSupplier;
 
 public class Solver {
     private static final Random RAND = new Random();
@@ -39,5 +40,15 @@ public class Solver {
             randomChoice(puzzle, stack);
             while (!stack.isEmpty()) checkAdjacentCells(stack.removeLast(), stack);
         }
+    }
+
+    public static BooleanSupplier solveSteps(Minesweeper puzzle) {
+        Deque<Cell> stack = new ArrayDeque<>();
+        return () -> {
+            if (puzzle.isSolved()) return true;
+            else if (stack.isEmpty()) randomChoice(puzzle, stack);
+            else checkAdjacentCells(stack.removeLast(), stack);
+            return false;
+        };
     }
 }
