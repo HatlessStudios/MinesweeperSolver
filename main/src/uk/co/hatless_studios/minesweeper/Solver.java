@@ -42,16 +42,15 @@ public class Solver {
         }
     }
 
-    public static BooleanSupplier solveSteps(Minesweeper puzzle) {
+    static BooleanSupplier solveSteps(Minesweeper puzzle) {
         Deque<Cell> stack = new ArrayDeque<>();
         return () -> {
-            if (puzzle.isSolved()) return true;
             int currentSize = stack.size();
             while (currentSize == stack.size()) {
                 if (stack.isEmpty()) randomChoice(puzzle, stack);
                 else checkAdjacentCells(stack.removeLast(), stack);
             }
-            return false;
+            return puzzle.isSolved();
         };
     }
 }
