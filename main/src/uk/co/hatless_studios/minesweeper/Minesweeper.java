@@ -50,9 +50,15 @@ public class Minesweeper {
         return true;
     }
 
-    boolean flag(int x, int y) {
+    boolean flag(int x, int y, Deque<Cell> updateQueue) {
         if (x < 0 || y < 0 || x >= width || y >= height || cells[x][y].flagged) return false;
         cells[x][y].flagged = true;
+        updateQueue.add(cells[x][y]);
+        return true;
+    }
+
+    boolean isSolved() {
+        for (Cell[] row : cells) for (Cell cell : row) if (!cell.revealed && cell.number >= 0) return false;
         return true;
     }
 }
