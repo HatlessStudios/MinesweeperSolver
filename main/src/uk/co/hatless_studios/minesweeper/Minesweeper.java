@@ -5,10 +5,13 @@ import java.util.Deque;
 import java.util.Random;
 
 public class Minesweeper {
-    private Cell[][] cells;
+    Cell[][] cells;
+    int width, height;
 
     public Minesweeper(int width, int height, int mines) {
         cells = new Cell[width][height];
+        this.width = width;
+        this.height = height;
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 cells[x][y] = new Cell(x, y);
@@ -22,12 +25,12 @@ public class Minesweeper {
                 y = random.nextInt(height);
             } while (cells[x][y].number != -1);
             cells[x][y].number = -9;
-            incrementNeighbours(x, y, width - 1, height - 1);
+            incrementNeighbours(x, y);
         }
     }
 
     boolean reveal(int x, int y, Deque<Cell> updateQueue) {
-        if (x < 0 || y < 0 || x >= cells.length || y >= cells[x].length || cells[x][y].number < 0 || cells[x][y].revealed) return false;
+        if (x < 0 || y < 0 || x >= width || y >= height || cells[x][y].number < 0 || cells[x][y].revealed) return false;
         if (cells[x][y].number > 0) {
             cells[x][y].revealed = true;
             updateQueue.add(cells[x][y]);
@@ -57,12 +60,14 @@ public class Minesweeper {
     }
 
     boolean flag(int x, int y) {
-        if (x < 0 || y < 0 || x >= cells.length || y >= cells[x].length || cells[x][y].flagged) return false;
+        if (x < 0 || y < 0 || x >= width || y >= height || cells[x][y].flagged) return false;
         cells[x][y].flagged = true;
         return true;
     }
 
-    private void incrementNeighbours(int x, int y, int w, int h) {
+    private void incrementNeighbours(int x, int y) {
+        int w = width - 1;
+        int h = height - 1;
         if (x > 0) cells[x - 1][y].increment();
         if (y > 0) cells[x][y - 1].increment();
         if (x < w) cells[x + 1][y].increment();
