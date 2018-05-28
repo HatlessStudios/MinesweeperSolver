@@ -18,6 +18,7 @@ public class Solution implements KeyListener {
     private BooleanSupplier step;
     private JLabel[][] labels;
     private Minesweeper puzzle;
+    private boolean done;
 
     Solution(Minesweeper puzzle){
         this.puzzle = puzzle;
@@ -67,9 +68,12 @@ public class Solution implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            step.getAsBoolean();
-
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && !done) {
+            try {
+                done = step.getAsBoolean();
+            } catch (UnsupportedOperationException ex) {
+                done = true;
+            }
             for (int i = 0; i < puzzle.width; i++) {
                 for (int j = 0; j < puzzle.height; j++) {
                     if (puzzle.cells[i][j].flagged) labels[i][j].setBackground(Color.YELLOW);

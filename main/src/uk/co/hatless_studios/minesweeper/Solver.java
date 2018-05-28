@@ -46,8 +46,11 @@ public class Solver {
         Deque<Cell> stack = new ArrayDeque<>();
         return () -> {
             if (puzzle.isSolved()) return true;
-            else if (stack.isEmpty()) randomChoice(puzzle, stack);
-            else checkAdjacentCells(stack.removeLast(), stack);
+            int currentSize = stack.size();
+            while (currentSize == stack.size()) {
+                if (stack.isEmpty()) randomChoice(puzzle, stack);
+                else checkAdjacentCells(stack.removeLast(), stack);
+            }
             return false;
         };
     }

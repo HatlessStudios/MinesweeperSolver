@@ -14,11 +14,7 @@ class Minesweeper {
         cells = new Cell[width][height];
         this.width = width;
         this.height = height;
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                cells[x][y] = new Cell(this, x, y);
-            }
-        }
+        for (int x = 0; x < width; x++) for (int y = 0; y < height; y++) cells[x][y] = new Cell(this, x, y);
         IntStream.range(0, width * height).boxed().sorted(this::randomize).limit(mines).forEach(k -> {
             int x = k % width;
             int y = k / width;
@@ -28,7 +24,11 @@ class Minesweeper {
     }
 
     void reveal(int x, int y, Deque<Cell> updateQueue) {
-        if (x < 0 || y < 0 || x >= width || y >= height || cells[x][y].number < 0 || cells[x][y].revealed) return;
+        if (x < 0 || y < 0 || x >= width || y >= height || cells[x][y].revealed) return;
+        if (cells[x][y].number < 0) {
+            cells[x][y].revealed = true;
+            throw new UnsupportedOperationException("cannot step on a mine");
+        }
         if (cells[x][y].number > 0) {
             cells[x][y].revealed = true;
             updateQueue.add(cells[x][y]);
