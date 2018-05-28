@@ -14,7 +14,7 @@ public class Minesweeper {
         this.height = height;
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                cells[x][y] = new Cell(x, y);
+                cells[x][y] = new Cell(this, x, y);
             }
         }
         Random random = new Random();
@@ -25,7 +25,7 @@ public class Minesweeper {
                 y = random.nextInt(height);
             } while (cells[x][y].number != -1);
             cells[x][y].number = -9;
-            incrementNeighbours(x, y);
+            cells[x][y].forEachNeighbour(Cell::increment);
         }
     }
 
@@ -45,16 +45,7 @@ public class Minesweeper {
             y = cell.y;
             cell.revealed = true;
             updateQueue.add(cell);
-            if (cell.number == 0) {
-                if (x > 0) stack.add(cells[x - 1][y]);
-                if (y > 0) stack.add(cells[x][y - 1]);
-                if (x < w) stack.add(cells[x + 1][y]);
-                if (y < h) stack.add(cells[x][y + 1]);
-                if (x > 0 && y > 0) stack.add(cells[x - 1][y - 1]);
-                if (x < w && y > 0) stack.add(cells[x + 1][y - 1]);
-                if (x > 0 && y < h) stack.add(cells[x - 1][y + 1]);
-                if (x < w && y < h) stack.add(cells[x + 1][y + 1]);
-            }
+            if (cell.number == 0) cell.forEachNeighbour(stack::add);
         }
         return true;
     }
@@ -63,18 +54,5 @@ public class Minesweeper {
         if (x < 0 || y < 0 || x >= width || y >= height || cells[x][y].flagged) return false;
         cells[x][y].flagged = true;
         return true;
-    }
-
-    private void incrementNeighbours(int x, int y) {
-        int w = width - 1;
-        int h = height - 1;
-        if (x > 0) cells[x - 1][y].increment();
-        if (y > 0) cells[x][y - 1].increment();
-        if (x < w) cells[x + 1][y].increment();
-        if (y < h) cells[x][y + 1].increment();
-        if (x > 0 && y > 0) cells[x - 1][y - 1].increment();
-        if (x < w && y > 0) cells[x + 1][y - 1].increment();
-        if (x > 0 && y < h) cells[x - 1][y + 1].increment();
-        if (x < w && y < h) cells[x + 1][y + 1].increment();
     }
 }
