@@ -3,10 +3,12 @@ package uk.co.hatless_studios.minesweeper;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Random;
-import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class Solver {
     private static final Random RAND = new Random();
+    private static int debug;
 
     /**
      * Checks cells adjacent to the given and cell and flags if a mine is guaranteed or checks if no mine is guaranteed.
@@ -24,9 +26,10 @@ public class Solver {
      * @param puzzle: the Minesweeper grid to work on
      */
     private static void randomChoice(Minesweeper puzzle, Deque<Cell> stack) {
+        System.out.println("Random " + debug++);
         int x = RAND.nextInt(puzzle.width);
         int y = RAND.nextInt(puzzle.height);
-        puzzle.reveal(x, y, stack);
+        if (!puzzle.cells[x][y].flagged) puzzle.reveal(x, y, stack);
     }
 
     /**
@@ -42,14 +45,19 @@ public class Solver {
         }
     }
 
-    static BooleanSupplier solveSteps(Minesweeper puzzle) {
+    static Predicate<Consumer<Deque<Cell>>> solveSteps(Minesweeper puzzle) {
         Deque<Cell> stack = new ArrayDeque<>();
-        return () -> {
+        return debug -> {
             int currentSize = stack.size();
             while (currentSize == stack.size()) {
-                if (stack.isEmpty()) randomChoice(puzzle, stack);
-                else checkAdjacentCells(stack.removeLast(), stack);
+                if (stack.isEmpty()) {
+                    randomChoice(puzzle, stack);
+                } else {
+                    checkAdjacentCells(stack.removeLast(), stack);
+                    currentSize--;
+                }
             }
+            debug.accept(stack);
             return puzzle.isSolved();
         };
     }

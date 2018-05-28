@@ -32,17 +32,16 @@ class Minesweeper {
         if (cells[x][y].number > 0) {
             cells[x][y].revealed = true;
             updateQueue.add(cells[x][y]);
+            cells[x][y].neighbours().filter(c -> c.revealed).forEach(updateQueue::add);
             return;
         }
-        int w = cells.length - 1, h = cells[x].length - 1;
         Deque<Cell> stack = new ArrayDeque<>();
         stack.add(cells[x][y]);
         while (!stack.isEmpty()) {
             Cell cell = stack.removeLast();
-            x = cell.x;
-            y = cell.y;
             cell.revealed = true;
             updateQueue.add(cell);
+            cell.neighbours().filter(c -> c.revealed).forEach(updateQueue::add);
             if (cell.number == 0) cell.neighbours().filter(c -> !c.revealed).forEach(stack::add);
         }
     }
@@ -50,7 +49,7 @@ class Minesweeper {
     void flag(int x, int y, Deque<Cell> updateQueue) {
         if (x < 0 || y < 0 || x >= width || y >= height || cells[x][y].flagged) return;
         cells[x][y].flagged = true;
-        updateQueue.add(cells[x][y]);
+        cells[x][y].neighbours().filter(c -> c.revealed).forEach(updateQueue::add);
     }
 
     boolean isSolved() {

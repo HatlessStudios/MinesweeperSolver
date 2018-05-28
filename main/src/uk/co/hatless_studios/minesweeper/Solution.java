@@ -11,11 +11,13 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.function.BooleanSupplier;
+import java.util.Deque;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class Solution implements KeyListener {
     private JFrame frame;
-    private BooleanSupplier step;
+    private Predicate<Consumer<Deque<Cell>>> step;
     private JLabel[][] labels;
     private Minesweeper puzzle;
     private boolean done;
@@ -40,10 +42,10 @@ public class Solution implements KeyListener {
                 label.setHorizontalAlignment(SwingConstants.CENTER);
                 labels[i][j] = label;
                 rootPanel.add(label, constraints);
-                constraints.gridx++;
+                constraints.gridy++;
             }
-            constraints.gridy++;
-            constraints.gridx = 0;
+            constraints.gridx++;
+            constraints.gridy = 1;
         }
         frame.add(rootPanel);
 
@@ -55,7 +57,7 @@ public class Solution implements KeyListener {
         frame.setVisible(true);
     }
 
-    Solution(Minesweeper puzzle, BooleanSupplier step) {
+    Solution(Minesweeper puzzle, Predicate<Consumer<Deque<Cell>>> step) {
         this(puzzle);
         this.step = step;
         frame.addKeyListener(this);
@@ -69,8 +71,9 @@ public class Solution implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER && !done) {
+            for (int i = 0; i < puzzle.width; i++) for (int j = 0; j < puzzle.height; j++) labels[i][j].setForeground(Color.BLACK);
             try {
-                done = step.getAsBoolean();
+                done = step.test(s -> s.forEach(c -> labels[c.x][c.y].setForeground(Color.BLUE)));
             } catch (UnsupportedOperationException ex) {
                 done = true;
             }
