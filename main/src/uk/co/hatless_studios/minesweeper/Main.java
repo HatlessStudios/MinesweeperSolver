@@ -99,8 +99,9 @@ public class Main implements KeyListener {
         try {
             Minesweeper minesweeper = new Minesweeper(Integer.valueOf(widthField.getText()), Integer.valueOf(heightField.getText()), Integer.valueOf(mineField.getText()));
             frame.setVisible(false);
-            Solver.solve(minesweeper);
-            new Solution(minesweeper);
+            //Solver.solve(minesweeper);
+            //new Solution(minesweeper);
+            new Solution(minesweeper, Solver.solveSteps(minesweeper));
         } catch (NumberFormatException ignored) {}
     }
 }
