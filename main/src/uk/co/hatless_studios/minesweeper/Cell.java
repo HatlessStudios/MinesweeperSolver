@@ -39,4 +39,10 @@ class Cell {
         if (x < w && y < h) builder.add(minesweeper.cells[x + 1][y + 1]);
         return builder.build();
     }
+
+    @Override
+    public String toString() {
+        if (number < 0) return "M";
+        return Integer.toString(number);
+    }
 }
